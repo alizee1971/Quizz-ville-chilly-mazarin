@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz Éclair</title>
+<style>
+:root{--bg:#efe9ff;--card:#fff;--ink:#2a1659;--mute:#6b5a93;--r:#e21b3c;--b:#1368ce;--y:#d89e00;--g:#26890c;--accent:#46178f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#2b0f5c;--card:#3a1a75;--ink:#fff;--mute:#c9b8f2;--accent:#8a5bff}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:"Baloo 2","Trebuchet MS",system-ui,sans-serif;font-weight:600}
+#app{max-width:900px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:clamp(2.6rem,9vw,4.6rem);line-height:1;margin:.2em 0 .1em;font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.4rem,4.5vw,2.1rem);line-height:1.2;margin:0}
+p{margin:.4em 0;color:var(--mute)}
+.center{text-align:center}
+.card{background:var(--card);border-radius:18px;padding:22px;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+input{font:inherit;font-size:1.3rem;width:100%;max-width:340px;padding:14px 16px;margin:6px 0;border-radius:12px;border:3px solid var(--accent);background:var(--card);color:var(--ink);text-align:center}
+input:focus-visible,button:focus-visible{outline:4px solid var(--y);outline-offset:2px}
+.btn{font:inherit;font-size:1.3rem;font-weight:800;color:#fff;background:var(--accent);border:0;border-radius:12px;padding:14px 34px;margin-top:14px;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.3)}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.3)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.sec{background:var(--card);color:var(--ink);border:3px solid var(--accent);box-shadow:none}
+.lnk{font:inherit;font-weight:800;background:none;border:0;color:var(--accent);text-decoration:underline;cursor:pointer;font-size:1.1rem;margin-top:18px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.pill{background:var(--card);padding:6px 16px;border-radius:99px;font-weight:800}
+.bar{height:14px;border-radius:99px;background:var(--card);overflow:hidden;margin-bottom:18px}
+.bar i{display:block;height:100%;width:100%;background:var(--y);transform-origin:left}
+.q{padding:26px 20px;text-align:center;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.grid.hostg{grid-template-columns:1fr}}
+.ans{font:inherit;font-size:clamp(1.05rem,3.4vw,1.5rem);font-weight:800;color:#fff;border:0;border-radius:12px;padding:20px 16px;min-height:84px;display:flex;align-items:center;gap:14px;text-align:left;box-shadow:0 5px 0 rgba(0,0,0,.3)}
+.ans svg{width:30px;height:30px;flex:none;fill:#fff}
+.ans b{margin-left:auto;font-size:1.6rem}
+.phone .ans{min-height:34vh;justify-content:center}
+.phone .ans svg{width:64px;height:64px}
+button.ans{cursor:pointer}
+button.ans:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.3)}
+.c0{background:var(--r)}.c1{background:var(--b)}.c2{background:var(--y)}.c3{background:var(--g)}
+.ans.dim{opacity:.28}
+.res{padding:30px 20px}
+.ok{background:var(--g);color:#fff}.ko{background:var(--r);color:#fff}
+.ok p,.ko p{color:#fff}
+.big{font-size:clamp(2rem,8vw,3.4rem);font-weight:800;margin:0}
+.rank{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:8px}
+.rank li{display:flex;justify-content:space-between;background:var(--card);padding:10px 16px;border-radius:10px;font-weight:800}
+.pod{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:26px 0 8px}
+.pod div{width:min(28vw,150px);border-radius:12px 12px 0 0;display:flex;flex-direction:column;align-items:center;padding:10px 4px;color:#fff;font-weight:800;text-align:center;word-break:break-word}
+.pod small{font-weight:600;opacity:.9}
+.p1{height:200px;background:var(--y)}.p2{height:150px;background:var(--b)}.p3{height:110px;background:var(--r)}
+.lob{display:flex;gap:26px;align-items:center;justify-content:center;flex-wrap:wrap}
+#qr{background:#fff;padding:10px;border-radius:12px;width:200px;height:200px;display:flex;align-items:center;justify-content:center;color:#000;font-size:.8rem;word-break:break-all}
+.code{font-size:clamp(2.6rem,10vw,4.4rem);font-weight:800;letter-spacing:.12em;color:var(--ink);margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+.chips span{background:var(--accent);color:#fff;padding:6px 14px;border-radius:99px;font-weight:800}
+.err{color:var(--r)}
+.qrow{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.acts{display:flex;gap:8px;flex-wrap:wrap}.acts .btn{margin:0;padding:10px 18px;font-size:1.05rem}
+.eq{margin-top:14px}.eq input.qi,#tt{max-width:none;text-align:left}
+.opt{display:flex;align-items:center;gap:10px;border-radius:12px;padding:8px 12px;margin-top:8px;color:#fff}
+.opt svg{width:22px;height:22px;fill:#fff;flex:none}
+.opt input.oi{margin:0;max-width:none;font-size:1.05rem;padding:8px 10px;text-align:left;border:0;background:rgba(255,255,255,.93);color:#2a1659}
+input[type=radio]{width:24px;height:24px;margin:0;padding:0;flex:none;accent-color:#fff}
+.logo{position:relative;width:130px;height:130px;margin:0 auto;border-radius:50%;background:#fff;border:4px solid #fff;box-shadow:0 6px 0 rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;font-size:3.4rem;overflow:hidden}
+.logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#fff}
+.brand{font-size:clamp(4rem,16vw,6.5rem);margin:.15em 0 0}
+.sub{margin:0 0 6px;font-size:clamp(1.4rem,5vw,2rem)}
+.lcard{background:#fff;color:#2a1659;border-radius:18px;padding:22px;text-align:left;max-width:440px;margin:22px auto 0;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.lcard p{color:#6b5a93}.lcard p.err{color:#e21b3c}
+.lh{display:flex;align-items:center;gap:10px}.lh span{font-size:1.9rem;line-height:1}
+.lcard input{max-width:none;text-align:left;background:#fff;color:#2a1659;margin:8px 0 0}
+.lcard .btn{width:100%;margin-top:16px}
+body.blue{background:linear-gradient(160deg,#1e3a8a 0%,#2563eb 55%,#60a5fa 100%);background-attachment:fixed}
+body.blue .brand,body.blue .sub,body.blue .lnk{color:#fff}
+.lcard input{border:2px solid #9aa5c4;border-radius:10px;padding:12px 14px;font-size:1.15rem}
+.lcard input:focus{border-color:#2563eb}
+.lcard input:focus-visible{outline:3px solid rgba(37,99,235,.35);outline-offset:1px}
+.lcard .btn{background:#15803d;transition:background .15s}
+.lcard .btn:active,.lcard .btn.wait{background:#1d4ed8}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const T=20;
+const DEF=[
+{q:"Quelle est la capitale de l’Australie ?",a:["Sydney","Canberra","Melbourne","Perth"],c:1},
+{q:"Combien y a-t-il de côtés dans un hexagone ?",a:["5","6","7","8"],c:1},
+{q:"Qui a peint La Joconde ?",a:["Michel-Ange","Raphaël","Léonard de Vinci","Botticelli"],c:2},
+{q:"Quelle planète est surnommée la planète rouge ?",a:["Vénus","Jupiter","Mars","Mercure"],c:2},
+{q:"En quelle année la Révolution française a-t-elle commencé ?",a:["1789","1804","1715","1848"],c:0},
+{q:"Quel est le plus grand océan du monde ?",a:["Atlantique","Indien","Arctique","Pacifique"],c:3},
+{q:"Quel élément chimique a pour symbole « O » ?",a:["Or","Osmium","Oxygène","Oganesson"],c:2},
+{q:"Quel fleuve traverse Paris ?",a:["La Loire","La Seine","Le Rhône","La Garonne"],c:1},
+{q:"Combien de joueurs y a-t-il sur le terrain dans une équipe de football ?",a:["9","10","11","12"],c:2},
+{q:"Quel pays a offert la statue de la Liberté aux États-Unis ?",a:["Royaume-Uni","Espagne","Italie","France"],c:3}
+];
+const SH=['<svg viewBox="0 0 24 24"><path d="M12 3 22 21H2z"/></svg>','<svg viewBox="0 0 24 24"><path d="M12 1 23 12 12 23 1 12z"/></svg>','<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>','<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/></svg>'];
+const $=s=>document.querySelector(s),app=$("#app");
+const esc=s=>{const d=document.createElement("div");d.textContent=String(s);return d.innerHTML};
+const uid=()=>Math.random().toString(36).slice(2,10);
+async function api(path,body){
+  const r=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body||{})});
+  let d={};try{d=await r.json()}catch(e){}
+  if(!r.ok)throw Object.assign(new Error(d.error||"Erreur"),{status:r.status});
+  return d;
+}
+const store={
+  get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},
+  del(k){try{localStorage.removeItem(k)}catch(e){}}
+};
+let LIB=store.get("qk-quizzes");
+if(!Array.isArray(LIB)){LIB=[{id:uid(),title:"Culture générale",qs:DEF,t:Date.now()}];store.set("qk-quizzes",LIB)}
+const saveLib=()=>store.set("qk-quizzes",LIB);
+let ES=null,H=null,HK="",PS=null,PK="",PNAME="",PINFO=null,tEnd=0,tk=null;
+function closeAll(){document.body.classList.remove("blue");if(ES)ES.close();ES=null;clearInterval(tk);H=null;HK="";PS=null;PK=""}
+
+/* ---------- accueil joueur ---------- */
+function home(msg){
+  closeAll();
+  const j=new URLSearchParams(location.search).get("j")||"";
+  app.innerHTML='<div class="center" style="padding-top:5vh"><h1>Quiz Éclair</h1><p>Saisis le code affiché sur l’écran, puis ton pseudo.</p><div class="card" style="margin-top:22px;max-width:440px;margin-left:auto;margin-right:auto"><input id="c" inputmode="numeric" maxlength="5" placeholder="Code à 5 chiffres" aria-label="Code de la partie"><br><input id="n" maxlength="14" autocomplete="off" placeholder="Ton pseudo" aria-label="Ton pseudo"><br><button class="btn" id="go">Rejoindre</button><p class="err" id="er">'+(msg||"")+'</p></div><button class="lnk" id="hb">Espace animateur</button></div>';
+  $("#c").value=j;
+  const go=async()=>{
+    const er=t=>$("#er").textContent=t,code=$("#c").value.trim(),name=$("#n").value.trim();
+    if(!/^\d{5}$/.test(code))return er("Saisis le code à 5 chiffres.");
+    if(!name)return er("Saisis un pseudo.");
+    $("#go").disabled=true;
+    try{const d=await api("/api/join",{code,name});PINFO={code,pid:d.pid,name:name.slice(0,14)};store.set("qk-p",PINFO);play()}
+    catch(e){$("#go").disabled=false;er(e.message)}
+  };
+  $("#go").onclick=go;
+  app.querySelectorAll("input").forEach(i=>i.onkeydown=e=>{if(e.key==="Enter")go()});
+  (j?$("#n"):$("#c")).focus();
+  $("#hb").onclick=async()=>{let ok=false;try{ok=(await(await fetch("/api/me")).json()).ok}catch(e){}ok?library():login()};
+}
+
+/* ---------- joueur ---------- */
+function play(){
+  closeAll();
+  app.innerHTML='<div class="center" style="padding-top:12vh"><h1>Quiz Éclair</h1><p>Connexion…</p></div>';
+  ES=new EventSource("/api/events?role=play&code="+PINFO.code+"&pid="+PINFO.pid);
+  ES.onmessage=e=>pRender(JSON.parse(e.data));
+  ES.onerror=()=>{if(ES&&ES.readyState===2){store.del("qk-p");home("Cette partie n’existe plus.")}};
+}
+function pRender(s){
+  PS=s;tEnd=Date.now()+(s.rem||0);
+  const k=s.ph+":"+s.qi+":"+(s.k===null?"n":"a");
+  if(k!==PK){PK=k;pFull(s)}
+}
+function pFull(s){
+  clearInterval(tk);
+  const w=h=>app.innerHTML='<div class="center phone">'+h+"</div>";
+  if(s.ph==="lobby")return w("<h1>"+esc(s.name)+"</h1><p>Tu es dans la partie ! Regarde l’écran de l’animateur.</p>");
+  if(s.ph==="q"){
+    if(s.k!==null)return w('<div class="card res"><p class="big">Réponse envoyée</p><p>Regarde l’écran.</p></div>');
+    w('<div class="bar"><i id="bar"></i></div><div class="grid">'+[0,1,2,3].map(k=>'<button class="ans c'+k+'" data-k="'+k+'" aria-label="Réponse '+(k+1)+'">'+SH[k]+"</button>").join("")+"</div>");
+    app.querySelectorAll("button.ans").forEach(b=>b.onclick=()=>{
+      const k=+b.dataset.k,qi=PS.qi;
+      PS.k=k;PK=PS.ph+":"+PS.qi+":a";pFull(PS);
+      api("/api/answer",{code:PINFO.code,pid:PINFO.pid,qi,k}).catch(()=>{});
+    });
+    tk=setInterval(()=>{const b=$("#bar");if(b)b.style.transform="scaleX("+Math.max(0,(tEnd-Date.now())/(T*1000))+")"},200);
+    return;
+  }
+  const m=s.me||[0,0,0],ord=m[2]+(m[2]===1?"er":"e");
+  if(s.ph==="r"){
+    const ok=s.k!==null&&s.k===s.c;
+    return w('<div class="card res '+(ok?"ok":"ko")+'"><p class="big">'+(s.k===null?"Temps écoulé":ok?"Bonne réponse":"Raté")+"</p><p>"+(ok?"+"+m[1]+" points":"")+'</p></div><p style="margin-top:18px">Tu es '+ord+" avec "+m[0]+" points</p>");
+  }
+  w('<h1>Terminé</h1><div class="card"><h2>'+ord+"</h2><p>"+m[0]+" points</p></div>");
+}
+
+/* ---------- connexion animateur ---------- */
+function login(msg){
+  closeAll();document.body.classList.add("blue");
+  app.innerHTML='<div class="center" style="padding-top:3vh"><div class="logo"><span aria-hidden="true">🏙️</span><img src="/logo.png" alt="Logo de la ville" onerror="this.remove()"></div><h1 class="brand">Quizz</h1><h2 class="sub">Espace animateur</h2><div class="lcard"><div class="lh"><span aria-hidden="true">🔒</span><h2>Connexion</h2></div><p>Entrez le mot de passe animateur pour accéder à l’espace.</p><input id="u" autocomplete="username" maxlength="30" placeholder="Identifiant" aria-label="Identifiant"><input id="p" type="password" autocomplete="current-password" placeholder="Mot de passe" aria-label="Mot de passe"><button class="btn" id="ok">Se connecter</button><p class="err" id="er">'+(msg||"")+'</p></div><button class="lnk" id="jn">Rejoindre une partie</button></div>';
+  let busy=false;
+  const go=async()=>{
+    if(busy)return;busy=true;
+    const b=$("#ok");b.classList.add("wait");b.textContent="Connexion…";$("#er").textContent="";
+    try{await api("/api/login",{u:$("#u").value,p:$("#p").value});library()}
+    catch(e){busy=false;b.classList.remove("wait");b.textContent="Se connecter";$("#er").textContent=e.message}
+  };
+  $("#ok").onclick=go;
+  app.querySelectorAll("input").forEach(i=>i.onkeydown=e=>{if(e.key==="Enter")go()});
+  $("#jn").onclick=()=>home();
+  $("#u").focus();
+}
+
+/* ---------- bibliothèque et éditeur ---------- */
+const blankQ=()=>({q:"",a:["","","",""],c:0});
+function library(msg){
+  closeAll();
+  app.innerHTML='<div class="top"><button class="lnk" id="bk" style="margin:0">← Accueil</button><button class="lnk" id="lo" style="margin:0">Se déconnecter</button></div><h1 style="font-size:clamp(2rem,7vw,3.2rem)">Mes quiz</h1><p>Tes quiz sont enregistrés dans ce navigateur.</p><p class="err" id="er">'+(msg||"")+'</p><div id="ql"></div><button class="btn" id="nw">Nouveau quiz</button>';
+  $("#bk").onclick=()=>home();
+  $("#lo").onclick=async()=>{try{await api("/api/logout")}catch(e){}home()};
+  $("#nw").onclick=()=>editor({title:"",qs:[blankQ()]});
+  const el=$("#ql");
+  if(!LIB.length){el.innerHTML='<div class="card center"><p>Tu n’as pas encore de quiz.</p></div>';return}
+  LIB.sort((a,b)=>(b.t||0)-(a.t||0));
+  el.innerHTML=LIB.map((q,i)=>'<div class="card qrow"><div><h2>'+esc(q.title||"Sans titre")+"</h2><p>"+q.qs.length+' questions</p></div><div class="acts"><button class="btn" data-a="go" data-i="'+i+'">Lancer</button><button class="btn sec" data-a="ed" data-i="'+i+'">Modifier</button><button class="btn sec" data-a="rm" data-i="'+i+'">Supprimer</button></div></div>').join("");
+  el.querySelectorAll("button[data-a]").forEach(b=>b.onclick=()=>{
+    const q=LIB[+b.dataset.i],a=b.dataset.a;
+    if(a==="go")launch(q);else if(a==="ed")editor(q);
+    else if(b.dataset.s){LIB=LIB.filter(x=>x.id!==q.id);saveLib();library()}
+    else{b.dataset.s=1;b.textContent="Confirmer ?"}
+  });
+}
+function editor(q){
+  closeAll();
+  const D={id:q.id,title:q.title||"",qs:JSON.parse(JSON.stringify(q.qs||[]))};
+  if(!D.qs.length)D.qs.push(blankQ());
+  const draw=()=>{
+    app.innerHTML='<div class="top"><button class="lnk" id="bk" style="margin:0">← Mes quiz</button></div><div class="card"><label for="tt"><h2>Titre du quiz</h2></label><input id="tt" maxlength="60" placeholder="Ex. Histoire de France"></div>'+
+    D.qs.map((x,i)=>'<div class="card eq"><div class="top"><h2>Question '+(i+1)+'</h2><button class="lnk" data-rm="'+i+'" style="margin:0">Supprimer</button></div><input class="qi" data-i="'+i+'" maxlength="140" placeholder="Écris ta question" aria-label="Question '+(i+1)+'"><p>Coche la bonne réponse.</p>'+
+      [0,1,2,3].map(k=>'<label class="opt c'+k+'"><input type="radio" name="r'+i+'" data-i="'+i+'" data-k="'+k+'" aria-label="Bonne réponse : option '+(k+1)+'">'+SH[k]+'<input class="oi" data-i="'+i+'" data-k="'+k+'" maxlength="80" placeholder="Réponse '+(k+1)+'" aria-label="Réponse '+(k+1)+' de la question '+(i+1)+'"></label>').join("")+"</div>").join("")+
+    '<div class="center"><button class="btn sec" id="aq"'+(D.qs.length>=50?" disabled":"")+'>Ajouter une question</button><p class="err" id="er"></p><button class="btn" id="sv">Enregistrer</button></div>';
+    $("#tt").value=D.title;$("#tt").oninput=e=>D.title=e.target.value;
+    app.querySelectorAll(".qi").forEach(e=>{e.value=D.qs[+e.dataset.i].q;e.oninput=()=>D.qs[+e.dataset.i].q=e.value});
+    app.querySelectorAll(".oi").forEach(e=>{e.value=D.qs[+e.dataset.i].a[+e.dataset.k];e.oninput=()=>D.qs[+e.dataset.i].a[+e.dataset.k]=e.value});
+    app.querySelectorAll("input[type=radio]").forEach(e=>{e.checked=D.qs[+e.dataset.i].c===+e.dataset.k;e.onchange=()=>D.qs[+e.dataset.i].c=+e.dataset.k});
+    app.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{D.qs.splice(+b.dataset.rm,1);if(!D.qs.length)D.qs.push(blankQ());draw()});
+    $("#aq").onclick=()=>{D.qs.push(blankQ());draw();window.scrollTo(0,document.body.scrollHeight)};
+    $("#bk").onclick=()=>library();
+    $("#sv").onclick=()=>{
+      const bad=D.qs.findIndex(x=>!x.q.trim()||x.a.some(t=>!t.trim()));
+      if(bad>=0)return $("#er").textContent="La question "+(bad+1)+" doit avoir un texte et 4 réponses.";
+      const data={id:D.id||uid(),title:D.title.trim()||"Sans titre",qs:D.qs.map(x=>({q:x.q.trim(),a:x.a.map(t=>t.trim()),c:x.c})),t:Date.now()};
+      LIB=LIB.filter(x=>x.id!==data.id).concat(data);saveLib();library();
+    };
+  };
+  draw();
+}
+
+/* ---------- animateur : partie ---------- */
+async function launch(q){
+  try{
+    const d=await api("/api/game",{qs:q.qs,title:q.title});
+    closeAll();H={code:d.code,key:d.key};
+    ES=new EventSource("/api/events?role=host&code="+d.code+"&key="+d.key);
+    ES.onmessage=e=>hRender(JSON.parse(e.data));
+    ES.onerror=()=>{if(ES&&ES.readyState===2)library("La partie n’existe plus.")};
+  }catch(e){e.status===401?login("Session expirée, reconnecte-toi."):library(e.message)}
+}
+const act=a=>api("/api/action",{code:H.code,key:H.key,a}).catch(()=>{});
+function hRender(h){
+  tEnd=Date.now()+(h.rem||0);
+  const k=h.ph+":"+h.qi;
+  if(k!==HK){HK=k;hFull(h)}else hPart(h);
+}
+function chips(h){
+  const e=$("#pl"),b=$("#st"),n=$("#np");
+  if(e)e.innerHTML=h.players.map(x=>"<span>"+esc(x)+"</span>").join("")||"<p>En attente des joueurs…</p>";
+  if(n)n.textContent=h.np+" joueur"+(h.np>1?"s":"");
+  if(b)b.disabled=!h.np;
+}
+function hPart(h){
+  if(h.ph==="lobby")chips(h);
+  if(h.ph==="q"){const c=$("#cnt");if(c)c.textContent=h.answered+" réponse"+(h.answered>1?"s":"")}
+}
+const tiles=(q,dist,c)=>'<div class="grid hostg">'+q.a.map((t,k)=>'<div class="ans c'+k+(dist&&k!==c?" dim":"")+'">'+SH[k]+"<span>"+esc(t)+"</span>"+(dist?"<b>"+dist[k]+"</b>":"")+"</div>").join("")+"</div>";
+const rank=l=>'<ul class="rank">'+l.map((t,i)=>"<li><span>"+(i+1)+". "+esc(t[0])+"</span><span>"+t[1]+"</span></li>").join("")+"</ul>";
+function hFull(h){
+  clearInterval(tk);
+  if(h.ph==="lobby"){
+    const url=location.origin+"/?j="+H.code;
+    app.innerHTML='<div class="center"><h1>Quiz Éclair</h1><p>Scanne le QR code, ou va sur <b>'+esc(location.host)+'</b> et saisis le code</p><div class="card lob"><div id="qr"></div><div><p>Code de la partie</p><p class="code">'+H.code+'</p></div></div><h2 id="np" style="margin-top:22px"></h2><div class="chips" id="pl"></div><button class="btn" id="st">Lancer la partie</button><br><button class="lnk" id="ex">Quitter</button></div>';
+    try{new QRCode($("#qr"),{text:url,width:180,height:180})}catch(e){$("#qr").textContent=url}
+    $("#st").onclick=()=>act("start");
+    $("#ex").onclick=()=>library();
+    chips(h);return;
+  }
+  if(h.ph==="q"){
+    app.innerHTML='<div class="top"><span class="pill">'+(h.qi+1)+" / "+h.n+'</span><span class="pill" id="tm">'+T+'</span><span class="pill" id="cnt">0 réponse</span></div><div class="bar"><i id="bar"></i></div><div class="card q"><h2>'+esc(h.q.q)+"</h2></div>"+tiles(h.q)+'<div class="center"><button class="btn" id="sk">Passer</button></div>';
+    $("#sk").onclick=()=>act("skip");hPart(h);
+    tk=setInterval(()=>{const l=Math.max(0,tEnd-Date.now()),t=$("#tm"),b=$("#bar");if(t)t.textContent=Math.ceil(l/1000);if(b)b.style.transform="scaleX("+l/(T*1000)+")"},200);
+    return;
+  }
+  if(h.ph==="r"){
+    app.innerHTML='<div class="top"><span class="pill">'+(h.qi+1)+" / "+h.n+'</span></div><div class="card q"><h2>'+esc(h.q.q)+"</h2></div>"+tiles(h.q,h.dist,h.c)+rank(h.top)+'<div class="center"><button class="btn" id="nx">'+(h.qi<h.n-1?"Question suivante":"Voir le podium")+"</button></div>";
+    $("#nx").onclick=()=>act("next");return;
+  }
+  const t=h.top,pod=(p,c)=>p?'<div class="'+c+'"><span>'+esc(p[0])+"</span><small>"+p[1]+"</small></div>":"<div></div>";
+  app.innerHTML='<div class="center"><h1>Podium</h1><div class="pod">'+pod(t[1],"p2")+pod(t[0],"p1")+pod(t[2],"p3")+'</div><button class="btn" id="re">Rejouer</button><br><button class="lnk" id="lib">Mes quiz</button></div>';
+  $("#re").onclick=()=>act("restart");
+  $("#lib").onclick=()=>library();
+}
+
+/* ---------- démarrage ---------- */
+document.addEventListener("touchstart",()=>{},{passive:true});
+(()=>{
+  const sp=store.get("qk-p"),j=new URLSearchParams(location.search).get("j");
+  if(sp&&sp.code&&sp.pid&&(!j||j===sp.code)){PINFO=sp;play()}else home();
+})();
+</script>
+</body>
+</html>
